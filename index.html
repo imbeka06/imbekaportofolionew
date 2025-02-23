@@ -56,20 +56,22 @@
         /* Dashboard Navigation */
         .dashboard {
             position: fixed;
-            top: 2rem;
-            left: 2rem;
+            top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
             background: rgba(0, 0, 34, 0.9);
-            border: 1px solid var(--neon);
-            border-radius: 30px;
-            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--neon);
             backdrop-filter: blur(10px);
             box-shadow: var(--glow);
+            padding: 1rem;
         }
 
         .dashboard-nav {
             display: flex;
-            gap: 2rem;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .dashboard-nav a {
@@ -98,12 +100,12 @@
         /* Page Container */
         .page-container {
             position: absolute;
-            top: 0;
+            top: 4rem; /* Adjusted to account for the fixed dashboard */
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 4rem); /* Adjusted height to avoid overflow */
             display: none;
-            padding: 8rem 2rem 2rem;
+            padding: 2rem;
             overflow-y: auto;
         }
 
@@ -290,18 +292,22 @@
         @media (max-width: 768px) {
             /* Adjust dashboard for mobile */
             .dashboard {
-                top: 1rem;
-                left: 1rem;
-                padding: 0.5rem 1rem;
+                padding: 0.5rem;
             }
 
             .dashboard-nav {
-                flex-direction: column;
                 gap: 0.5rem;
             }
 
             .dashboard-nav a {
                 padding: 0.5rem;
+            }
+
+            /* Adjust page container for mobile */
+            .page-container {
+                top: 3rem; /* Adjusted for smaller dashboard height */
+                height: calc(100% - 3rem); /* Adjusted height */
+                padding: 1rem;
             }
 
             /* Adjust home page for mobile */
