@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imbeka Musa - tech Visionary</title>
+    <title>Imbeka Musa - Tech Visionary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -272,6 +272,7 @@
     <div class="dashboard">
         <nav class="dashboard-nav">
             <a href="#home">// HOME</a>
+            <a href="#about me">//ABOUT ME</a>
             <a href="#projects">// PROJECTS</a>
             <a href="#skills">// SKILLS</a>
             <a href="#contact">// CONTACT</a>
@@ -283,12 +284,13 @@
         <div class="home-page">
             <div class="logo-circle">IM</div>
             <h1>IMBEKA MUSA</h1>
-            <p>Software Engineering Student</p>
-            <p>Pursuing Bachelor's Degree in Mathematics and Computer Science at</p>
+            <p>TECH ENTHUSIAST|Third year Student</p>
+        
+    
             <p>Jomo Kenyatta University of Agriculture and Technology</p>
-            <p>Third Year Student</p>
         </div>
     </div>
+    
 
     <!-- Projects Page -->
     <div class="page-container" id="projects-page">
@@ -296,11 +298,15 @@
             <h2 class="cyber-header">IMBEKA Projects</h2>
             <div class="quantum-grid">
                 <div class="quantum-card">
-                    <h3>Math Game Project</h3>
+                    <h3>Math Game Project C++</h3>
                     <p>Interactive educational game for learning mathematics</p>
                 </div>
                 <div class="quantum-card">
-                    <h3>ATM Simulation</h3>
+                    <h3>Health Connect App</h3>
+                    <p>An application connecting health users,enhancing patient doctor communication</p>
+                </div>
+                <div class="quantum-card">
+                    <h3>ATM Simulation C++</h3>
                     <p>Banking system simulation with secure transactions</p>
                 </div>
                 <div class="quantum-card">
@@ -318,7 +324,7 @@
             <div class="skill-matrix">
                 <div class="skill-node">
                     <h3>Programming Languages</h3>
-                    <p>C, C++, Java, Python, R, Html,CSS,JavaScript</p>
+                    <p>C, C++, Java, Python, R</p>
                 </div>
                 <div class="skill-node">
                     <h3>Web Development</h3>
@@ -330,7 +336,7 @@
                 </div>
                 <div class="skill-node">
                     <h3>Mathematical Expertise</h3>
-                    <p>Linear Algebra, Calculus, Odinary Differential Equations, Statistics,Applied mathematics</p>
+                    <p>Linear Algebra, Calculus, Ordinary Differential Equations, Statistics, Applied Mathematics</p>
                 </div>
                 <div class="skill-node">
                     <h3>Technical Tools</h3>
@@ -344,9 +350,9 @@
     <div class="page-container" id="contact-page">
         <div class="contact-page">
             <h2 class="cyber-header">Transmission Hub</h2>
-            <form class="hologram-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+            <form class="hologram-form" action="https://formspree.io/f/xovjboqa" method="POST">
                 <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="_replyto" placeholder="Your Email" required>
+                <input type="email" name="email" placeholder="Your Email" required>
                 <textarea name="message" rows="5" placeholder="Encrypted Message" required></textarea>
                 <button type="submit" class="cyber-button">
                     <i class="fas fa-paper-plane"></i> Send Transmission
@@ -357,7 +363,7 @@
 
     <div class="transmission-success" id="success-message">TRANSMISSION SUCCESSFUL!</div>
 
-    <script src="script.js">
+    <script>
         // Page routing system
         const pages = {
             'home': document.getElementById('home-page'),
@@ -400,7 +406,7 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
@@ -413,6 +419,8 @@
                     void successMessage.offsetWidth; // Trigger reflow
                     successMessage.style.animation = 'transmitGlow 2s';
                     form.reset();
+                } else {
+                    console.error('Transmission failed:', await response.text());
                 }
             } catch (error) {
                 console.error('Transmission failed:', error);
