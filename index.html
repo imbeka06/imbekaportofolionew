@@ -56,29 +56,27 @@
         /* Dashboard Navigation */
         .dashboard {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 1rem;
+            left: 1rem;
             z-index: 1000;
             background: rgba(0, 0, 34, 0.9);
-            border-bottom: 1px solid var(--neon);
+            border: 1px solid var(--neon);
+            border-radius: 30px;
+            padding: 1rem;
             backdrop-filter: blur(10px);
             box-shadow: var(--glow);
-            padding: 1rem;
         }
 
         .dashboard-nav {
             display: flex;
-            justify-content: center;
             gap: 1rem;
-            flex-wrap: wrap;
         }
 
         .dashboard-nav a {
             color: white;
             text-decoration: none;
             position: relative;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
             transition: 0.3s;
         }
 
@@ -100,10 +98,10 @@
         /* Page Container */
         .page-container {
             position: absolute;
-            top: 4rem; /* Adjusted to account for the fixed dashboard */
+            top: 6rem; /* Adjusted to account for the fixed dashboard */
             left: 0;
             width: 100%;
-            height: calc(100% - 4rem); /* Adjusted height to avoid overflow */
+            height: calc(100% - 6rem); /* Adjusted height to avoid overflow */
             display: none;
             padding: 2rem;
             overflow-y: auto;
@@ -292,6 +290,8 @@
         @media (max-width: 768px) {
             /* Adjust dashboard for mobile */
             .dashboard {
+                top: 0.5rem;
+                left: 0.5rem;
                 padding: 0.5rem;
             }
 
@@ -301,12 +301,13 @@
 
             .dashboard-nav a {
                 padding: 0.5rem;
+                font-size: 0.9rem; /* Smaller font size for mobile */
             }
 
             /* Adjust page container for mobile */
             .page-container {
-                top: 3rem; /* Adjusted for smaller dashboard height */
-                height: calc(100% - 3rem); /* Adjusted height */
+                top: 5rem; /* Adjusted for smaller dashboard height */
+                height: calc(100% - 5rem); /* Adjusted height */
                 padding: 1rem;
             }
 
