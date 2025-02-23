@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        /* Your existing styles remain unchanged */
         :root {
             --neon: #0ff;
             --matrix: #0f0;
@@ -263,6 +264,59 @@
             50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
         }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            /* Adjust dashboard for mobile */
+            .dashboard {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .dashboard-nav a {
+                padding: 0.5rem;
+            }
+
+            /* Adjust home page for mobile */
+            .home-page h1 {
+                font-size: 2.5rem;
+            }
+
+            .logo-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2.5rem;
+            }
+
+            /* Adjust projects page for mobile */
+            .quantum-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quantum-card {
+                padding: 1rem;
+            }
+
+            /* Adjust skills page for mobile */
+            .skill-matrix {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-node {
+                padding: 1rem;
+            }
+
+            /* Adjust contact page for mobile */
+            .hologram-form {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -284,13 +338,25 @@
         <div class="home-page">
             <div class="logo-circle">IM</div>
             <h1>IMBEKA MUSA</h1>
-            <p>TECH ENTHUSIAST|Third year Student</p>
-        
-    
+            <p>TECH ENTHUSIAST||Third year Student</p>
             <p>Jomo Kenyatta University of Agriculture and Technology</p>
         </div>
     </div>
-    
+
+    <!-- About Me Page -->
+    <div class="page-container" id="about-page">
+        <div class="about-page">
+            <h2 class="cyber-header">About Me</h2>
+            <div class="about-content">
+                <p>
+                    I am a curious and hardworking student pursuing a Bachelor of Science in Mathematics and Computer Science, majoring in Computer Science and Applied Mathematics. I am passionate about designing innovative systems to solve complex problems. My interests span the creation of systems for mathematical problem-solving, research on developing intuitive web builders, exploring game designs, and integrating hardware and software for impactful solutions. I am also deeply drawn to venturing into electronic programming, currently learning about machine learning and AI, where I aspire to harness cutting-edge technologies to address real-world challenges.
+                </p>
+                <p>
+                    I thrive on collaboration and am eager to assist others in their projects while learning from diverse perspectives. Whether contributing to a team effort or working independently, I approach every challenge with determination, creativity, and a relentless curiosity. With a strong commitment to growth, I aim to inspire, educate, and innovate, driving progress in every field I touch.
+                </p>
+            </div>
+        </div>
+    </div>
 
     <!-- Projects Page -->
     <div class="page-container" id="projects-page">
