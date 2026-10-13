@@ -205,7 +205,31 @@
              if(modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = ''; // Re-enable scrolling
+                if (modalId === 'videoModal') {
+                    const embed = document.getElementById('videoEmbed');
+                    if (embed) embed.innerHTML = '';
+                }
              }
+        }
+
+        function videoEmbedHtml(url) {
+            const value = String(url);
+            const youtube = value.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+            if (youtube) return `<iframe src="https://www.youtube.com/embed/${youtube[1]}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            const vimeo = value.match(/vimeo\.com\/(\d+)/);
+            if (vimeo) return `<iframe src="https://player.vimeo.com/video/${vimeo[1]}?autoplay=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+            return `<video src="${value}" controls autoplay></video>`;
+        }
+
+        function openVideoModal(url) {
+            const embed = document.getElementById('videoEmbed');
+            if (!embed || !url) return;
+            embed.innerHTML = videoEmbedHtml(url);
+            openModal('videoModal');
+        }
+
+        function closeVideoModal() {
+            closeModal('videoModal');
         }
         
         // Close modal when clicking outside
