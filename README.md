@@ -65,15 +65,17 @@ Run these commands from the repository root using Git Bash:
    - **Photo** documents (upload images and provide useful alt text);
    - **Blog post** documents.
 
-7. Allow the portfolio website to read the dataset. Add each frontend origin to the Sanity project's CORS origins. During local development this will normally be your local server origin, such as `http://localhost:8080`. Add your deployed portfolio URL too. Credentials are not needed for a public, read-only portfolio.
+7. Allow the portfolio website to read the dataset. Add each frontend origin to the Sanity project's CORS origins. During local development this will normally be your local server origin, such as `http://localhost:8081`. Add your deployed portfolio URL too. Credentials are not needed for a public, read-only portfolio.
 
 8. Preview the portfolio through a local web server rather than opening `index.html` directly:
 
    ```sh
-   python -m http.server 8080
+   python -m http.server 8081
    ```
 
-   Then open `http://localhost:8080`.
+   Then open `http://localhost:8081`.
+
+   > Port `8080` is often reserved by IIS on Windows (it returns a 403). Use `8081` (or any free port) instead.
 
 ## Deploying
 
