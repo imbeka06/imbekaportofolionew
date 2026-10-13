@@ -16,11 +16,14 @@
         "settings": *[_type == "siteSettings"][0]{name, professionalTagline, developerTagline, about, email, phone, githubUrl, linkedinUrl, instagramUrl},
         "projects": *[_type == "project"] | order(order asc){_id, title, technologies, description, githubUrl, liveUrl, featured, videoUrl, "videoFileUrl": videoFile.asset->url},
         "photos": *[_type == "photo"] | order(order asc){_id, caption, alt, "imageUrl": image.asset->url},
-        "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, body[]{..., children[]{...}}},
+        "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, category, externalUrl, body[]{..., children[]{...}}},
         "experiences": *[_type == "experience"] | order(order asc){_id, title, company, startDate, endDate, highlights},
         "educations": *[_type == "education"] | order(order asc){_id, degree, institution, startDate, endDate, notes},
         "certifications": *[_type == "certification"] | order(order asc){_id, name, issuer, date, credentialUrl},
-        "skillCategories": *[_type == "skillCategory"] | order(order asc){_id, title, skills, group}
+        "skillCategories": *[_type == "skillCategory"] | order(order asc){_id, title, skills, group},
+        "facts": *[_type == "fact"] | order(order asc){_id, title, items},
+        "musings": *[_type == "musings"] | order(order asc){_id, title, body[]{..., children[]{...}}},
+        "fame": *[_type == "fame"] | order(order asc){_id, title, description}
     }`;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -92,27 +95,92 @@
         }).join('');
     }
 
-    function renderPosts(posts) {
-        if (!Array.isArray(posts) || posts.length === 0) return;
-        const list = document.querySelector('[data-cms-post-list]');
+    function renderPostCards(posts, containerSelector, backView) {
+        const list = document.querySelector(containerSelector);
         const host = document.querySelector('[data-cms-post-host]');
-        if (!list || !host) return;
+        if (!list) return;
+        if (!Array.isArray(posts) || posts.length === 0) return;
 
-        list.innerHTML = posts.map((post, index) => `<button type="button" class="blog-card cms-blog-card" data-cms-post-index="${index}">
-            <div class="blog-content">
-                <h3 class="blog-title">${escapeHtml(post.title)}</h3>
-                <p class="blog-excerpt">${escapeHtml(post.excerpt || '')}</p>
-            </div>
-        </button>`).join('');
+        list.innerHTML = posts.map((post, index) => {
+            const external = safeUrl(post.externalUrl);
+            if (external) {
+                return `<button type="button" class="blog-card cms-blog-card" onclick="window.open('${escapeHtml(external)}', '_blank', 'noopener,noreferrer')">
+                    <div class="blog-content">
+                        <h3 class="blog-title">${escapeHtml(post.title)}</h3>
+                        <p class="blog-excerpt">${escapeHtml(post.excerpt || '')}</p>
+                    </div>
+                </button>`;
+            }
+            return `<button type="button" class="blog-card cms-blog-card" data-cms-post-index="${index}">
+                <div class="blog-content">
+                    <h3 class="blog-title">${escapeHtml(post.title)}</h3>
+                    <p class="blog-excerpt">${escapeHtml(post.excerpt || '')}</p>
+                </div>
+            </button>`;
+        }).join('');
 
         list.addEventListener('click', (event) => {
             const card = event.target.closest('[data-cms-post-index]');
-            if (!card) return;
+            if (!card || !host) return;
             const post = posts[Number(card.dataset.cmsPostIndex)];
             if (!post) return;
-            host.querySelector('[data-cms-post-title]').textContent = post.title || 'Blog post';
+            host.querySelector('[data-cms-post-title]').textContent = post.title || 'Post';
             host.querySelector('[data-cms-post-body]').innerHTML = portableTextToHtml(post.body);
+            const backBtn = host.querySelector('[data-cms-post-back]');
+            if (backBtn) {
+                backBtn.setAttribute('onclick', `showView('${backView}')`);
+                backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${backView === 'blog' ? 'Back to Blog' : 'Back to Writings'}`;
+            }
             showView('cms-post');
+        });
+    }
+
+    function renderPosts(posts) {
+        if (!Array.isArray(posts) || posts.length === 0) return;
+        renderPostCards(posts.filter((p) => p.category !== 'writing'), '[data-cms-post-list]', 'blog');
+        renderPostCards(posts.filter((p) => p.category === 'writing'), '[data-cms-writing-list]', 'writings');
+    }
+
+    function renderFacts(facts) {
+        if (!Array.isArray(facts) || facts.length === 0) return;
+        const cards = facts.map((fact) => {
+            const items = Array.isArray(fact.items) && fact.items.length
+                ? `<ul>${fact.items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
+                : '';
+            return `<div class="fact-card">
+                <h3 class="category-title">${escapeHtml(fact.title)}</h3>
+                ${items}
+            </div>`;
+        }).join('');
+        document.querySelectorAll('[data-cms-facts]').forEach((container) => {
+            container.innerHTML = cards;
+        });
+    }
+
+    function renderMusings(musings) {
+        if (!Array.isArray(musings) || musings.length === 0) return;
+        const sections = musings.map((musing) => {
+            const body = portableTextToHtml(musing.body);
+            if (!body) return '';
+            return `<div class="content-section">
+                <h2 class="section-title">${escapeHtml(musing.title)}</h2>
+                ${body}
+            </div>`;
+        }).join('');
+        if (!sections) return;
+        document.querySelectorAll('[data-cms-musings]').forEach((container) => {
+            container.innerHTML = sections;
+        });
+    }
+
+    function renderFame(fame) {
+        if (!Array.isArray(fame) || fame.length === 0) return;
+        const cards = fame.map((item) => `<div class="fact-card">
+            <h3 class="category-title">${escapeHtml(item.title)}</h3>
+            ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
+        </div>`).join('');
+        document.querySelectorAll('[data-cms-fame]').forEach((container) => {
+            container.innerHTML = cards;
         });
     }
 
@@ -214,6 +282,9 @@
             renderEducations(payload.result.educations);
             renderCertifications(payload.result.certifications);
             renderSkills(payload.result.skillCategories);
+            renderFacts(payload.result.facts);
+            renderMusings(payload.result.musings);
+            renderFame(payload.result.fame);
             document.documentElement.dataset.cms = 'sanity';
         } catch (error) {
             console.warn('Could not load Sanity content; keeping built-in portfolio content.', error);
