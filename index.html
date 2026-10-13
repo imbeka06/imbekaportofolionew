@@ -473,7 +473,7 @@
             <!-- Card 4: Fails -->
             <div class="project-card" onclick="showView('fails')" style="cursor: pointer;">
                 <div class="project-content">
-                    <h3 class="project-title">Hall of Shame</h3>
+                    <h3 class="project-title">Hall of Fame</h3>
                     <p class="project-description">A humorous look at my biggest coding fails and the lessons learned.</p>
                 </div>
             </div>
@@ -610,7 +610,7 @@
         <div class="content-section">
             <h2 class="section-title">Random Facts About Me</h2>
             
-            <div class="fact-grid">
+            <div class="fact-grid" data-cms-facts>
                 <div class="fact-card">
                     <h3 class="category-title">Daily Routine</h3>
                     <ul>
@@ -657,6 +657,8 @@
                 </a>
             </div>
         </div>
+        
+        <div data-cms-musings></div>
     </section>
 
     <!-- Writings View - NOW LINKS TO ONENOTE -->
@@ -670,7 +672,7 @@
             <h2 class="section-title">Manuscripts & Thoughts</h2>
             <p>Chronicles and thoughts on technology, philosophy, and life. Click a card to read on OneNote.</p> 
             
-            <div class="project-grid">
+            <div class="project-grid" data-cms-writing-list>
                 <!-- Card 1: Architect -->
                 <div class="blog-card" onclick="window.open('https://onedrive.live.com/view.aspx?resid=YOUR_SHARE_ID_HERE_ARCHITECT&authkey=!YOUR_AUTHKEY_HERE', '_blank')">
                     <div class="blog-content">
@@ -737,7 +739,7 @@
 
     <!-- A reusable view for blog posts loaded from Sanity. -->
     <section id="cms-post-view" class="view-content" data-cms-post-host>
-        <button class="back-btn" onclick="showView('blog')"><i class="fas fa-arrow-left"></i> Back to Blog</button>
+        <button class="back-btn" data-cms-post-back onclick="showView('blog')"><i class="fas fa-arrow-left"></i> Back to Blog</button>
         <p class="view-subtitle" data-cms-post-title>Blog Post</p>
         <article class="content-section blog-post-content" data-cms-post-body></article>
     </section>
@@ -785,9 +787,9 @@
         <p class="view-subtitle">Coding Fails</p>
 
         <div class="content-section">
-            <h2 class="section-title">Coding Fails Hall of Shame 🚠️</h2>
+            <h2 class="section-title">Hall of Fame</h2>
             
-            <div class="fact-grid">
+            <div class="fact-grid" data-cms-fame>
                 <div class="fact-card">
                     <h3 class="category-title">The 24-hour Debug</h3>
                     <p>Spent a full day debugging only to realize I was comparing strings with == in JavaScript.</p>
