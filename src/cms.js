@@ -19,7 +19,8 @@
         "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, body[]{..., children[]{...}}},
         "experiences": *[_type == "experience"] | order(order asc){_id, title, company, startDate, endDate, highlights},
         "educations": *[_type == "education"] | order(order asc){_id, degree, institution, startDate, endDate, notes},
-        "certifications": *[_type == "certification"] | order(order asc){_id, name, issuer, date, credentialUrl}
+        "certifications": *[_type == "certification"] | order(order asc){_id, name, issuer, date, credentialUrl},
+        "skillCategories": *[_type == "skillCategory"] | order(order asc){_id, title, skills, group}
     }`;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -178,6 +179,22 @@
         section.style.display = '';
     }
 
+    function renderSkills(skillCategories) {
+        if (!Array.isArray(skillCategories) || skillCategories.length === 0) return;
+        document.querySelectorAll('[data-cms-skills]').forEach((container) => {
+            const group = container.getAttribute('data-cms-skills');
+            const items = skillCategories.filter((cat) => cat.group === group);
+            if (items.length === 0) return;
+            container.innerHTML = items.map((cat) => {
+                const skills = Array.isArray(cat.skills) ? cat.skills.join(', ') : '';
+                return `<div class="skill-category">
+                    <h3 class="category-title">${escapeHtml(cat.title)}</h3>
+                    <p>${escapeHtml(skills)}</p>
+                </div>`;
+            }).join('');
+        });
+    }
+
     async function loadContent() {
         try {
             const response = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`);
@@ -191,6 +208,7 @@
             renderExperiences(payload.result.experiences);
             renderEducations(payload.result.educations);
             renderCertifications(payload.result.certifications);
+            renderSkills(payload.result.skillCategories);
             document.documentElement.dataset.cms = 'sanity';
         } catch (error) {
             console.warn('Could not load Sanity content; keeping built-in portfolio content.', error);
