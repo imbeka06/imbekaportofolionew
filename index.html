@@ -496,7 +496,9 @@
             <p data-cms-about>When I'm not coding, you'll find me exploring the world or pursuing my next adventure.</p>
             <p>From hiking, nature trails to photography, I believe in living life to the fullest.</p>
             
-            <div class="adventure-gallery" data-cms-photos>
+            <div class="fact-grid" data-cms-highlights></div>
+            
+            <div class="adventure-gallery" data-cms-photos="adventure">
                 <div class="gallery-item">
                     <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hiking">
                     <div class="gallery-caption">Hiking Mount Longonot</div>
@@ -539,7 +541,7 @@
         <div class="content-section">
             <h2 class="section-title">Adventure Bucket List</h2>
             
-            <div class="fact-grid">
+            <div class="fact-grid" data-cms-bucket-list>
                 <div class="fact-card">
                     <h3 class="category-title">Upcoming Adventures</h3>
                     <ul>
@@ -754,7 +756,7 @@
             <h2 class="section-title">Photography</h2>
             <p>A few moments captured from my journeys.</p>
             
-            <div class="adventure-gallery" data-cms-photos>
+            <div class="adventure-gallery" data-cms-photos="photography">
                 <!-- Images are the same as in Adventure section -->
                 <div class="gallery-item">
                     <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hiking">
@@ -858,6 +860,17 @@
 
     <!-- +++++ END OF INTERNAL BLOG POST VIEWS +++++ -->
 
+
+    <!-- Photo Lightbox Modal -->
+    <div id="lightboxModal" class="modal">
+        <div class="lightbox-content">
+            <button class="close-modal lightbox-close" onclick="closeModal('lightboxModal')">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="prevLightbox()"><i class="fas fa-chevron-left"></i></button>
+            <img id="lightboxImage" src="" alt="">
+            <button class="lightbox-nav lightbox-next" onclick="nextLightbox()"><i class="fas fa-chevron-right"></i></button>
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
 
     <!-- Video Demo Modal -->
     <div id="videoModal" class="modal">
