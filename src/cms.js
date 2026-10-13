@@ -15,7 +15,7 @@
     const query = `{
         "settings": *[_type == "siteSettings"][0]{name, professionalTagline, developerTagline, about, email, phone, githubUrl, linkedinUrl, instagramUrl},
         "projects": *[_type == "project"] | order(order asc){_id, title, technologies, description, githubUrl, liveUrl, featured, videoUrl, "videoFileUrl": videoFile.asset->url},
-        "photos": *[_type == "photo"] | order(order asc){_id, caption, alt, "imageUrl": image.asset->url},
+        "photos": *[_type == "photo"] | order(order asc){_id, caption, alt, category, "imageUrl": image.asset->url},
         "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, category, externalUrl, body[]{..., children[]{...}}},
         "experiences": *[_type == "experience"] | order(order asc){_id, title, company, startDate, endDate, highlights},
         "educations": *[_type == "education"] | order(order asc){_id, degree, institution, startDate, endDate, notes},
@@ -23,7 +23,9 @@
         "skillCategories": *[_type == "skillCategory"] | order(order asc){_id, title, skills, group},
         "facts": *[_type == "fact"] | order(order asc){_id, title, items},
         "musings": *[_type == "musings"] | order(order asc){_id, title, body[]{..., children[]{...}}},
-        "fame": *[_type == "fame"] | order(order asc){_id, title, description}
+        "fame": *[_type == "fame"] | order(order asc){_id, title, description},
+        "adventureHighlights": *[_type == "adventureHighlight"] | order(order asc){_id, title, description},
+        "bucketItems": *[_type == "bucketItem"] | order(order asc){_id, title, description, category}
     }`;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -69,18 +71,18 @@
 
     function renderPhotos(photos) {
         if (!Array.isArray(photos) || photos.length === 0) return;
-        const gallery = photos.map((photo) => {
-            const imageUrl = safeUrl(photo.imageUrl);
-            if (!imageUrl) return '';
-            return `<div class="gallery-item">
-                <img src="${escapeHtml(imageUrl)}?auto=format&w=900" alt="${escapeHtml(photo.alt || photo.caption || 'Portfolio photograph')}" loading="lazy">
-                <div class="gallery-caption">${escapeHtml(photo.caption || '')}</div>
-            </div>`;
-        }).join('');
-        if (!gallery) return;
-
         document.querySelectorAll('[data-cms-photos]').forEach((container) => {
-            container.innerHTML = gallery;
+            const category = container.getAttribute('data-cms-photos') || 'adventure';
+            const filtered = photos.filter((photo) => (photo.category || 'adventure') === category);
+            if (filtered.length === 0) return;
+            container.innerHTML = filtered.map((photo) => {
+                const imageUrl = safeUrl(photo.imageUrl);
+                if (!imageUrl) return '';
+                return `<div class="gallery-item">
+                    <img src="${escapeHtml(imageUrl)}?auto=format&w=900" data-full="${escapeHtml(imageUrl)}?auto=format" alt="${escapeHtml(photo.alt || photo.caption || 'Portfolio photograph')}" loading="lazy">
+                    <div class="gallery-caption">${escapeHtml(photo.caption || '')}</div>
+                </div>`;
+            }).join('');
         });
     }
 
@@ -180,6 +182,39 @@
             ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
         </div>`).join('');
         document.querySelectorAll('[data-cms-fame]').forEach((container) => {
+            container.innerHTML = cards;
+        });
+    }
+
+    function renderHighlights(highlights) {
+        if (!Array.isArray(highlights) || highlights.length === 0) return;
+        const cards = highlights.map((h) => `<div class="fact-card">
+            <h3 class="category-title">${escapeHtml(h.title)}</h3>
+            ${h.description ? `<p>${escapeHtml(h.description)}</p>` : ''}
+        </div>`).join('');
+        document.querySelectorAll('[data-cms-highlights]').forEach((container) => {
+            container.innerHTML = cards;
+        });
+    }
+
+    function renderBucketList(bucketItems) {
+        if (!Array.isArray(bucketItems) || bucketItems.length === 0) return;
+        const groups = {
+            upcoming: {title: 'Upcoming Adventures', items: []},
+            dream: {title: 'Dream Adventures', items: []},
+        };
+        bucketItems.forEach((item) => {
+            const key = item.category === 'upcoming' ? 'upcoming' : 'dream';
+            groups[key].items.push(item);
+        });
+        const cards = Object.values(groups)
+            .filter((group) => group.items.length > 0)
+            .map((group) => `<div class="fact-card">
+                <h3 class="category-title">${group.title}</h3>
+                <ul>${group.items.map((item) => `<li>${escapeHtml(item.title)}${item.description ? ' — ' + escapeHtml(item.description) : ''}</li>`).join('')}</ul>
+            </div>`)
+            .join('');
+        document.querySelectorAll('[data-cms-bucket-list]').forEach((container) => {
             container.innerHTML = cards;
         });
     }
@@ -285,6 +320,8 @@
             renderFacts(payload.result.facts);
             renderMusings(payload.result.musings);
             renderFame(payload.result.fame);
+            renderHighlights(payload.result.adventureHighlights);
+            renderBucketList(payload.result.bucketItems);
             document.documentElement.dataset.cms = 'sanity';
         } catch (error) {
             console.warn('Could not load Sanity content; keeping built-in portfolio content.', error);
