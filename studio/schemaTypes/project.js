@@ -10,6 +10,8 @@ export const project = defineType({
     defineField({name: 'description', title: 'Description', type: 'text', rows: 5, validation: (rule) => rule.required()}),
     defineField({name: 'githubUrl', title: 'GitHub URL', type: 'url'}),
     defineField({name: 'liveUrl', title: 'Live project URL', type: 'url'}),
+    defineField({name: 'videoUrl', title: 'Demo video URL', type: 'url', description: 'YouTube, Vimeo, or a direct .mp4 URL — shown as "Watch Demo"'}),
+    defineField({name: 'videoFile', title: 'Demo video file', type: 'file', description: 'Upload an .mp4 — shown as "Watch Demo"'}),
     defineField({name: 'featured', title: 'Featured', type: 'boolean', initialValue: true}),
     defineField({name: 'order', title: 'Display order', type: 'number', initialValue: 100}),
   ],
