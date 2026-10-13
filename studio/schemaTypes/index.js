@@ -5,5 +5,6 @@ import {post} from './post.js'
 import {experience} from './experience.js'
 import {education} from './education.js'
 import {certification} from './certification.js'
+import {skillCategory} from './skillCategory.js'
 
-export const schemaTypes = [siteSettings, project, photo, post, experience, education, certification]
+export const schemaTypes = [siteSettings, project, photo, post, experience, education, certification, skillCategory]
