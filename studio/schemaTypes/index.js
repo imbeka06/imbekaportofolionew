@@ -9,6 +9,8 @@ import {skillCategory} from './skillCategory.js'
 import {fact} from './fact.js'
 import {musings} from './musings.js'
 import {fame} from './fame.js'
+import {adventureHighlight} from './adventureHighlight.js'
+import {bucketItem} from './bucketItem.js'
 
 export const schemaTypes = [
   siteSettings,
@@ -22,4 +24,6 @@ export const schemaTypes = [
   fact,
   musings,
   fame,
+  adventureHighlight,
+  bucketItem,
 ]
