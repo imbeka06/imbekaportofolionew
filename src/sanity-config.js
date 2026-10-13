@@ -4,7 +4,7 @@
  * its built-in content until both values are configured.
  */
 window.SANITY_CONFIG = {
-    projectId: '',
+    projectId: 'z67e015r',
     dataset: 'production',
     apiVersion: '2025-01-01',
     useCdn: true
