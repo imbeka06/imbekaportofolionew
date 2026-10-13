@@ -16,7 +16,10 @@
         "settings": *[_type == "siteSettings"][0]{name, professionalTagline, developerTagline, about, email, phone, githubUrl, linkedinUrl, instagramUrl},
         "projects": *[_type == "project"] | order(order asc){_id, title, technologies, description, githubUrl, liveUrl, featured},
         "photos": *[_type == "photo"] | order(order asc){_id, caption, alt, "imageUrl": image.asset->url},
-        "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, body[]{..., children[]{...}}}
+        "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, body[]{..., children[]{...}}},
+        "experiences": *[_type == "experience"] | order(order asc){_id, title, company, startDate, endDate, highlights},
+        "educations": *[_type == "education"] | order(order asc){_id, degree, institution, startDate, endDate, notes},
+        "certifications": *[_type == "certification"] | order(order asc){_id, name, issuer, date, credentialUrl}
     }`;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -122,6 +125,59 @@
         if (about && settings.about) about.textContent = settings.about;
     }
 
+    function renderExperiences(experiences) {
+        if (!Array.isArray(experiences) || experiences.length === 0) return;
+        const items = experiences.map((exp) => {
+            const duration = [exp.startDate, exp.endDate || 'Present'].filter(Boolean).join(' - ');
+            const highlights = Array.isArray(exp.highlights) && exp.highlights.length
+                ? `<ul>${exp.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join('')}</ul>`
+                : '';
+            return `<div class="experience-item">
+                <h3 class="item-title">${escapeHtml(exp.title)}</h3>
+                ${exp.company ? `<p class="item-subtitle">${escapeHtml(exp.company)}</p>` : ''}
+                ${duration ? `<p class="item-duration">${escapeHtml(duration)}</p>` : ''}
+                ${highlights}
+            </div>`;
+        }).join('');
+        document.querySelectorAll('[data-cms-experiences]').forEach((container) => {
+            container.innerHTML = items;
+        });
+    }
+
+    function renderEducations(educations) {
+        if (!Array.isArray(educations) || educations.length === 0) return;
+        const items = educations.map((edu) => {
+            const duration = [edu.startDate, edu.endDate || 'Present'].filter(Boolean).join(' - ');
+            return `<div class="education-item">
+                <h3 class="item-title">${escapeHtml(edu.degree)}</h3>
+                ${edu.institution ? `<p class="item-subtitle">${escapeHtml(edu.institution)}</p>` : ''}
+                ${duration ? `<p class="item-duration">${escapeHtml(duration)}</p>` : ''}
+                ${edu.notes ? `<p>${escapeHtml(edu.notes)}</p>` : ''}
+            </div>`;
+        }).join('');
+        document.querySelectorAll('[data-cms-educations]').forEach((container) => {
+            container.innerHTML = items;
+        });
+    }
+
+    function renderCertifications(certifications) {
+        const section = document.querySelector('[data-cms-certifications-section]');
+        if (!section) return;
+        if (!Array.isArray(certifications) || certifications.length === 0) return;
+        const cards = certifications.map((cert) => {
+            const credentialUrl = safeUrl(cert.credentialUrl);
+            return `<div class="fact-card">
+                <h3 class="category-title">${escapeHtml(cert.name)}</h3>
+                ${cert.issuer ? `<p>${escapeHtml(cert.issuer)}</p>` : ''}
+                ${cert.date ? `<p class="item-duration">${escapeHtml(cert.date)}</p>` : ''}
+                ${credentialUrl ? `<a href="${escapeHtml(credentialUrl)}" target="_blank" rel="noopener noreferrer" class="contact-btn" style="padding: 8px 15px; font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-award"></i> View Credential</a>` : ''}
+            </div>`;
+        }).join('');
+        const list = document.querySelector('[data-cms-certifications]');
+        if (list) list.innerHTML = cards;
+        section.style.display = '';
+    }
+
     async function loadContent() {
         try {
             const response = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`);
@@ -132,6 +188,9 @@
             renderProjects(payload.result.projects);
             renderPhotos(payload.result.photos);
             renderPosts(payload.result.posts);
+            renderExperiences(payload.result.experiences);
+            renderEducations(payload.result.educations);
+            renderCertifications(payload.result.certifications);
             document.documentElement.dataset.cms = 'sanity';
         } catch (error) {
             console.warn('Could not load Sanity content; keeping built-in portfolio content.', error);
