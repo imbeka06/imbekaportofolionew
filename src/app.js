@@ -231,6 +231,48 @@
         function closeVideoModal() {
             closeModal('videoModal');
         }
+
+        // --- Photo lightbox ---
+        let lightboxImages = [];
+        let lightboxIndex = 0;
+
+        function openLightbox(index) {
+            const img = lightboxImages[index];
+            const modal = document.getElementById('lightboxModal');
+            const imgEl = document.getElementById('lightboxImage');
+            const captionEl = document.getElementById('lightboxCaption');
+            if (!img || !modal || !imgEl) return;
+            lightboxIndex = index;
+            imgEl.src = img.src;
+            imgEl.alt = img.alt || '';
+            if (captionEl) captionEl.textContent = img.caption || '';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function nextLightbox() {
+            if (lightboxImages.length) openLightbox((lightboxIndex + 1) % lightboxImages.length);
+        }
+
+        function prevLightbox() {
+            if (lightboxImages.length) openLightbox((lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length);
+        }
+
+        document.addEventListener('click', function(e) {
+            const item = e.target.closest('.gallery-item');
+            if (!item) return;
+            const gallery = item.parentElement;
+            if (!gallery) return;
+            const imgs = Array.from(gallery.querySelectorAll('.gallery-item img'));
+            lightboxImages = imgs.map((img) => ({
+                src: img.getAttribute('data-full') || img.getAttribute('src') || '',
+                alt: img.getAttribute('alt') || '',
+                caption: img.nextElementSibling ? img.nextElementSibling.textContent : ''
+            }));
+            const clickedImg = item.querySelector('img');
+            const index = clickedImg ? imgs.indexOf(clickedImg) : 0;
+            openLightbox(index >= 0 ? index : 0);
+        });
         
         // Close modal when clicking outside
         window.addEventListener('click', function(e) {
