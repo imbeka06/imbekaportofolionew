@@ -14,7 +14,7 @@
     const endpoint = `https://${config.projectId}.${host}.sanity.io/v${apiVersion}/data/query/${config.dataset}`;
     const query = `{
         "settings": *[_type == "siteSettings"][0]{name, professionalTagline, developerTagline, about, email, phone, githubUrl, linkedinUrl, instagramUrl},
-        "projects": *[_type == "project"] | order(order asc){_id, title, technologies, description, githubUrl, liveUrl, featured},
+        "projects": *[_type == "project"] | order(order asc){_id, title, technologies, description, githubUrl, liveUrl, featured, videoUrl, "videoFileUrl": videoFile.asset->url},
         "photos": *[_type == "photo"] | order(order asc){_id, caption, alt, "imageUrl": image.asset->url},
         "posts": *[_type == "post"] | order(publishedAt desc){_id, title, slug, excerpt, publishedAt, body[]{..., children[]{...}}},
         "experiences": *[_type == "experience"] | order(order asc){_id, title, company, startDate, endDate, highlights},
@@ -45,12 +45,17 @@
                 : project.technologies || '';
             const githubUrl = safeUrl(project.githubUrl);
             const liveUrl = safeUrl(project.liveUrl);
+            const videoUrl = safeUrl(project.videoUrl || project.videoFileUrl);
+            const watchDemo = videoUrl
+                ? `<button type="button" class="contact-btn" style="padding: 8px 15px; font-size: 0.9rem; margin-top: 8px; background: #1a7a4a; border-color: #1a7a4a;" onclick="openVideoModal('${escapeHtml(videoUrl)}')"><i class="fas fa-play"></i> Watch Demo</button>`
+                : '';
             return `<div class="project-card"><div class="project-content">
                 <h3 class="project-title">${escapeHtml(project.title)}</h3>
                 <p class="project-tech">${escapeHtml(technologies)}</p>
                 <p class="project-description">${escapeHtml(project.description)}</p>
                 ${githubUrl ? `<a href="${escapeHtml(githubUrl)}" target="_blank" rel="noopener noreferrer" class="contact-btn" style="padding: 8px 15px; font-size: 0.9rem;"><i class="fab fa-github"></i> View on GitHub</a>` : ''}
                 ${liveUrl ? `<a href="${escapeHtml(liveUrl)}" target="_blank" rel="noopener noreferrer" class="contact-btn" style="padding: 8px 15px; font-size: 0.9rem; margin-top: 8px; background: #1a7a4a; border-color: #1a7a4a;"><i class="fas fa-external-link-alt"></i> View Live Project</a>` : ''}
+                ${watchDemo}
             </div></div>`;
         }).join('');
 
